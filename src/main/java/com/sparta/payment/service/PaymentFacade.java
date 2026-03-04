@@ -1,7 +1,10 @@
 package com.sparta.payment.service;
 
 import com.sparta.payment.dto.PaymentDto;
+import com.sparta.payment.dto.ProductDto;
+import com.sparta.payment.entity.Product;
 import com.sparta.payment.infra.PgClient;
+import com.sparta.payment.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +15,12 @@ import java.util.UUID;
 public class PaymentFacade {
     private final PgClient pgClient;
     private final PaymentTransactionService txService;
+    private final ProductService productService;
 
     public PaymentDto.PaymentReadyResponse preparePayment(PaymentDto.OrderRequest request) {
         String merchantUid = "PAY-" + UUID.randomUUID().toString();
-        Long calculatedAmount = 100L * request.getQuantity(); // 임시 로직
+        ProductDto.ProductResponse productResponse = productService.getProduct(request.getProductId());
+        Long calculatedAmount = productResponse.getPrice() * request.getQuantity();
         txService.savePendingPayment(merchantUid, calculatedAmount);
         return new PaymentDto.PaymentReadyResponse(merchantUid, calculatedAmount, "스프링 부트 마스터 강의");
     }
