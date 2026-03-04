@@ -1,18 +1,15 @@
 package com.sparta.payment.entity;
 
 import com.sparta.payment.enums.PaymentStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Payment {
+@Table(name = "payments")
+public class Payment extends Timestamped{
     @Id
     private String merchantUid;
     private Long amount;
